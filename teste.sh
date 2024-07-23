@@ -13,10 +13,4 @@ export DATABASE_CONNECT_STRING='localhost:27017'
 export BD_DATABASE_NAME='myFirstDataBase'
 export BACKUP_DIR=''
 
-./backupmg
-
-if [ $? -eq 0 ]; then
-    echo "teste passou"
-else
-    echo "teste falhou"
-fi
+./backupmg || echo "Erro ao executar o binário"
