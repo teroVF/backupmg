@@ -2,8 +2,6 @@
 import subprocess
 from os import getenv
 from sys import exit, argv
-import os
-import sys
 
 # os.environ['DATABASE_USERNAME'] = 'antero'
 # os.environ['DATABASE_PASSWORD'] = '123'
@@ -12,24 +10,24 @@ import sys
 # os.environ['BACKUP_DIR'] = ' '
 
 def error_message():
-    if (len(sys.argv) > 1):
+    if (len(argv) > 1):
         print('comando inválido, utiliza: "./backupmg"')
-        sys.exit(1)
+        exit(1)
     
-    if not all(os.getenv(var) for var in ['DATABASE_USERNAME', 'DATABASE_PASSWORD', 'DATABASE_CONNECT_STRING', 'BD_DATABASE_NAME']):
+    if not all(getenv(var) for var in ['DATABASE_USERNAME', 'DATABASE_PASSWORD', 'DATABASE_CONNECT_STRING', 'BD_DATABASE_NAME']):
         print('Variáveis de ambiente não configuradas, utiliza: export DATABASE_USERNAME=<username>, export DATABASE_PASSWORD=<password>, export DATABASE_CONNECT_STRING=<url>, export BD_DATABASE_NAME=<database>')
-        sys.exit(1)
+        exit(1)
 
 
 def make_backup(db_name):
-    backup = "dump" if not os.getenv('BACKUP_DIR') or os.getenv('BACKUP_DIR').strip() == "" else os.getenv('BACKUP_DIR')
-    
+    backup = "dump" if not getenv('BACKUP_DIR') or getenv('BACKUP_DIR').strip() == "" else getenv('BACKUP_DIR')
+
     command = [
         'mongodump',
-        '--host', os.getenv('DATABASE_CONNECT_STRING'),
+        '--host', getenv('DATABASE_CONNECT_STRING'),
         '--db', db_name,
-        '--username', os.getenv('DATABASE_USERNAME'),
-        '--password', os.getenv('DATABASE_PASSWORD'),
+        '--username', getenv('DATABASE_USERNAME'),
+        '--password', getenv('DATABASE_PASSWORD'),
         '--out', backup
     ]
     try:
@@ -45,7 +43,7 @@ def make_backup(db_name):
 if __name__ == "__main__":
     error_message()
     try:
-        make_backup(os.getenv('BD_DATABASE_NAME'))
+        make_backup(getenv('BD_DATABASE_NAME'))
 
     except Exception as e:
         print('Falha ao conectar ao MongoDB:', e)
